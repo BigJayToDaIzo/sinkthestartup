@@ -2,13 +2,14 @@ package com.hfj.sinkthestartup.classes;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.hfj.sinkthestartup.utility.RandomizerUtility;
+
 public class Startup {
-	private Random randomizer = new Random();
+	private RandomizerUtility randomizer = new RandomizerUtility();
 	private String name;
 	private List<String> cells = new ArrayList<>();
 	private static Logger log = LoggerFactory.getLogger(Startup.class);
@@ -19,11 +20,11 @@ public class Startup {
 
 	public void randomizeCells() {
 		//determine run along column or row
-		int colOrRow = randomizer.nextInt(2);
+		int colOrRow = randomizer.getCoinFlip();
 		if(colOrRow == 0){
 			//row based startup
-			int randomRow = randomizer.nextInt(8);
-			int randomColStart = randomizer.nextInt(6);
+			int randomRow = randomizer.getRandInt(8);
+			int randomColStart = randomizer.getRandInt(6);
 			char row = convertIntToRowName(randomRow);
 
 			for(int i=0; i < 3; i++){
@@ -32,8 +33,8 @@ public class Startup {
 			}
 		} else {
 			//column based startup
-			int randomCol = randomizer.nextInt(8);
-			int randomRowStart = randomizer.nextInt(5);
+			int randomCol = randomizer.getRandInt(8);
+			int randomRowStart = randomizer.getRandInt(5);
 			char row1 = convertIntToRowName(randomRowStart);
 			char row2 = convertIntToRowName(randomRowStart + 1);
 			char row3 = convertIntToRowName(randomRowStart + 2);
