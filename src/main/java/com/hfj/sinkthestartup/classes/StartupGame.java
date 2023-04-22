@@ -21,13 +21,13 @@ public final class StartupGame {
 	private static int numOfGuesses = 0;
 
 	// constructor
-	public static StartupGame getInstance(Startup s1, Startup s2, Startup s3){
+	private static StartupGame getInstance(Startup s1, Startup s2, Startup s3){
 		if(INSTANCE == null) INSTANCE = new StartupGame();
 
 		s1.randomizeCells();
 		startups.add(s1);
 		addOccupiedCells(s1);
-		log.info("Startup 1 cells:{}:", s1.cellsToString());
+		log.debug("Startup 1 cells:{}:", s1.cellsToString());
 		System.console();
 
 		s2.randomizeCells();
@@ -38,7 +38,7 @@ public final class StartupGame {
 		} 
 		startups.add(s2);
 		addOccupiedCells(s2);
-		log.info("Startup 2 cells:{}", s2.cellsToString());
+		log.debug("Startup 2 cells:{}", s2.cellsToString());
 
 
 		s3.randomizeCells();
@@ -49,35 +49,24 @@ public final class StartupGame {
 		} 
 		startups.add(s3);
 		addOccupiedCells(s3);
-		log.info("Startup 3 cells:{}", s3.cellsToString());
+		log.debug("Startup 3 cells:{}", s3.cellsToString());
 		
 		return INSTANCE;
 	}
 
-	public static StartupGame setup(){
-		log.info("Name your first startup to be randomly placed on the grid: ");
-		String startup1Name = scanner.nextLine();
-		log.info("Name your second startup to be randomly placed on the grid: ");
-		String startup2Name = scanner.nextLine();
-		log.info("Name your third startup to be randomly placed on the grid: ");
-		String startup3Name = scanner.nextLine();
-
-		return getInstance(new Startup(startup1Name), new Startup(startup2Name), new Startup(startup3Name));
-	}
-
-	public static List<Startup> getStartups(){
+	private static List<Startup> getStartups(){
 		return startups;
 	}
 
-	public static void removeStartup(Startup s){
+	private static void removeStartup(Startup s){
 		startups.remove(s);
 	}
 
-	public static List<String> getUserGuesses(){
+	private static List<String> getUserGuesses(){
 		return userGuesses;
 	}
 
-	public static void setUserGuess(String guess){
+	private static void setUserGuess(String guess){
 		userGuesses.add(guess);
 	}
 
@@ -85,11 +74,11 @@ public final class StartupGame {
 		return numOfGuesses;
 	}
 
-	public static void iterateNumOfGuesses(){
+	private static void iterateNumOfGuesses(){
 		numOfGuesses++;
 	}
 
-	public static boolean containsOverlap(Startup su){
+	private static boolean containsOverlap(Startup su){
 		List<String> suCells = su.getCells();
 		for(String cell : occupiedCells){
 			if(suCells.contains(cell)) return true;
@@ -97,10 +86,38 @@ public final class StartupGame {
 		return false;
 	}
 
-	public static void addOccupiedCells(Startup s){
+	private static void addOccupiedCells(Startup s){
 		for(String cell : s.getCells()){
 			occupiedCells.add(cell);
 		}
+	}
+
+	private static boolean checkForHit(String userGuess){
+		boolean contains = false;
+		for(Startup su : StartupGame.getStartups()){
+			if(su.containsCell(userGuess)) {
+				contains = true;
+				log.info("Direct hit on startup {} at {}!", su.getName(), userGuess);
+				su.removeCell(userGuess);
+				if(su.getCells().isEmpty()) {
+					StartupGame.removeStartup(su);
+					log.info("You've destroyed startup {}!", su.getName());
+				}
+				break;
+			}
+		}
+		return contains;
+	}
+
+	public static StartupGame setup(){
+		log.info("\nName your first startup to be randomly placed on the grid: ");
+		String startup1Name = scanner.nextLine();
+		log.info("\nName your second startup to be randomly placed on the grid: ");
+		String startup2Name = scanner.nextLine();
+		log.info("\nName your third startup to be randomly placed on the grid: ");
+		String startup3Name = scanner.nextLine();
+
+		return getInstance(new Startup(startup1Name), new Startup(startup2Name), new Startup(startup3Name));
 	}
 
 	public static void gameLoop(){
@@ -108,25 +125,14 @@ public final class StartupGame {
 			log.info("Guess a cell in row/col format, i.e. A0 or H7: ");
 			String userGuess = scanner.nextLine();
 			if(StartupGame.getUserGuesses().contains(userGuess)){
-				log.info("You've already guessed {}, guess again.", userGuess);
+				log.info("\nYou've already guessed {}, guess again.", userGuess);
 			} else {
 				StartupGame.setUserGuess(userGuess);
 				StartupGame.iterateNumOfGuesses();
-				boolean contains = false;
-				for(Startup su : StartupGame.getStartups()){
-					if(su.containsCell(userGuess)) {
-						contains = true;
-						log.info("Direct hit on startup {} at {}!", su.getName(), userGuess);
-						su.removeCell(userGuess);
-						if(su.getCells().isEmpty()) {
-							StartupGame.removeStartup(su);
-							log.info("You've destroyed startup {}!", su.getName());
-						}
-						break;
-					}
-				}
-				if(!contains) log.info("Miss at {}! Keep trying!", userGuess);
+				if(!StartupGame.checkForHit(userGuess)) log.info("\nMiss at {}! Keep trying!", userGuess);
 			}
 		}
+		
 	}
+
 }

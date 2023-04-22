@@ -25,7 +25,6 @@ public class SinkthestartupApplication implements CommandLineRunner{
 
 		StartupGame.setup();
 		StartupGame.gameLoop();
-		
-		log.info("You've destroyed all the startups in {} guesses. YOU WIN!", StartupGame.getNumOfGuesses());			
+		log.info("\nYou've destroyed all the startups in {} guesses. YOU WIN!", StartupGame.getNumOfGuesses());			
 	}
 }
