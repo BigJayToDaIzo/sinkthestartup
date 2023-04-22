@@ -27,29 +27,27 @@ public final class StartupGame {
 		s1.randomizeCells();
 		startups.add(s1);
 		addOccupiedCells(s1);
-		log.debug("Startup 1 cells:{}:", s1.cellsToString());
-		System.console();
 
 		s2.randomizeCells();
 		while(containsOverlap(s2)){
-			log.info("Startup 2 contained a dupe cell. Rerolling!");
+			log.debug("Startup {} contained a dupe cell. Rerolling!", s2.getName());
 			s2.clearCells();
 			s2.randomizeCells();
 		} 
 		startups.add(s2);
 		addOccupiedCells(s2);
-		log.debug("Startup 2 cells:{}", s2.cellsToString());
 
 
 		s3.randomizeCells();
 		while(containsOverlap(s3)){
-			log.info("Startup 3 contained a dupe cell. Rerolling!");
+			log.debug("Startup {} contained a dupe cell. Rerolling!", s3.getName());
 			s3.clearCells();
 			s3.randomizeCells();
 		} 
 		startups.add(s3);
 		addOccupiedCells(s3);
-		log.debug("Startup 3 cells:{}", s3.cellsToString());
+
+		outputBoardState();
 		
 		return INSTANCE;
 	}
@@ -97,16 +95,29 @@ public final class StartupGame {
 		for(Startup su : StartupGame.getStartups()){
 			if(su.containsCell(userGuess)) {
 				contains = true;
-				log.info("Direct hit on startup {} at {}!", su.getName(), userGuess);
+				log.info("\nDirect hit on startup {} at {}!", su.getName(), userGuess);
 				su.removeCell(userGuess);
 				if(su.getCells().isEmpty()) {
 					StartupGame.removeStartup(su);
-					log.info("You've destroyed startup {}!", su.getName());
+					log.info("\nYou've destroyed startup {}!", su.getName());
 				}
 				break;
 			}
 		}
 		return contains;
+	}
+
+	private static void outputBoardState(){
+		StringBuilder sb = new StringBuilder("\n***** Game Board State *****\n");
+		sb.append("* Startups/Cells reamining *\n");
+		for(Startup su : startups){
+			String suAppend = String.format("%s%n", su);
+			sb.append(suAppend);
+		}
+		String userGuessesAppend = String.format("* Number of user guesses: %d%n", getNumOfGuesses());
+		sb.append(userGuessesAppend);
+		String sb2s = sb.toString();
+		log.debug(sb2s);
 	}
 
 	public static StartupGame setup(){
@@ -122,8 +133,8 @@ public final class StartupGame {
 
 	public static void gameLoop(){
 		while(!StartupGame.getStartups().isEmpty()){
-			log.info("Guess a cell in row/col format, i.e. A0 or H7: ");
-			String userGuess = scanner.nextLine();
+			log.info("\nGuess a cell in row/col format, i.e. A0 or H7: ");
+			String userGuess = scanner.nextLine().toUpperCase();
 			if(StartupGame.getUserGuesses().contains(userGuess)){
 				log.info("\nYou've already guessed {}, guess again.", userGuess);
 			} else {
@@ -131,8 +142,9 @@ public final class StartupGame {
 				StartupGame.iterateNumOfGuesses();
 				if(!StartupGame.checkForHit(userGuess)) log.info("\nMiss at {}! Keep trying!", userGuess);
 			}
+			outputBoardState();
 		}
-		
+
 	}
 
 }
