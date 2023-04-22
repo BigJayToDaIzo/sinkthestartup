@@ -1,12 +1,18 @@
 package com.hfj.sinkthestartup;
 
-import org.junit.jupiter.api.Test;
+import static org.junit.Assert.assertNotNull;
 
-public class SinkthestartupApplicationTests {
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+
+class SinkthestartupApplicationTests {
+
+	@Autowired
+	private SinkthestartupApplication app = new SinkthestartupApplication();
 
 	@Test
 	void contextLoads(){
-		
+		assertNotNull(app);
 	}
 
 }

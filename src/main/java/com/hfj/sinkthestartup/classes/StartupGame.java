@@ -8,26 +8,24 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
-public final class StartupGame {
-	//Static variable reference of StartupGame of type Singleton
-	private static StartupGame INSTANCE;
-
+public class StartupGame {
 	// instance variables
 	private static final Logger log = LoggerFactory.getLogger(StartupGame.class);
 	private static Scanner scanner = new Scanner(System.in);
-	private static List<Startup> startups = new ArrayList<>();
-	private static List<String> occupiedCells = new ArrayList<>();
-	private static List<String> userGuesses = new ArrayList<>();
-	private static int numOfGuesses = 0;
+	private List<Startup> startups = new ArrayList<>();
+	private List<String> occupiedCells = new ArrayList<>();
+	private List<String> userGuesses = new ArrayList<>();
+	private int numOfGuesses = 0;
 
 	// constructor
-	private static StartupGame getInstance(Startup s1, Startup s2, Startup s3){
-		if(INSTANCE == null) INSTANCE = new StartupGame();
-
+	public StartupGame(){
+		String[] startupNames = setStartupNames();
+		Startup s1 = new Startup(startupNames[0]);
 		s1.randomizeCells();
 		startups.add(s1);
 		addOccupiedCells(s1);
 
+		Startup s2 = new Startup(startupNames[1]);
 		s2.randomizeCells();
 		while(containsOverlap(s2)){
 			log.debug("Startup {} contained a dupe cell. Rerolling!", s2.getName());
@@ -37,7 +35,7 @@ public final class StartupGame {
 		startups.add(s2);
 		addOccupiedCells(s2);
 
-
+		Startup s3 = new Startup(startupNames[2]);
 		s3.randomizeCells();
 		while(containsOverlap(s3)){
 			log.debug("Startup {} contained a dupe cell. Rerolling!", s3.getName());
@@ -48,35 +46,34 @@ public final class StartupGame {
 		addOccupiedCells(s3);
 
 		outputBoardState();
-		
-		return INSTANCE;
+
 	}
 
-	private static List<Startup> getStartups(){
+	public List<Startup> getStartups(){
 		return startups;
 	}
 
-	private static void removeStartup(Startup s){
+	public void removeStartup(Startup s){
 		startups.remove(s);
 	}
 
-	private static List<String> getUserGuesses(){
+	public List<String> getUserGuesses(){
 		return userGuesses;
 	}
 
-	private static void setUserGuess(String guess){
+	public void setUserGuess(String guess){
 		userGuesses.add(guess);
 	}
 
-	public static int getNumOfGuesses(){
+	public int getNumOfGuesses(){
 		return numOfGuesses;
 	}
 
-	private static void iterateNumOfGuesses(){
+	public void iterateNumOfGuesses(){
 		numOfGuesses++;
 	}
 
-	private static boolean containsOverlap(Startup su){
+	public boolean containsOverlap(Startup su){
 		List<String> suCells = su.getCells();
 		for(String cell : occupiedCells){
 			if(suCells.contains(cell)) return true;
@@ -84,19 +81,19 @@ public final class StartupGame {
 		return false;
 	}
 
-	private static void addOccupiedCells(Startup s){
+	public void addOccupiedCells(Startup s){
 		for(String cell : s.getCells()){
 			occupiedCells.add(cell);
 		}
 	}
 
-	private static boolean checkForHit(String userGuess){
-		for(Startup su : StartupGame.getStartups()){
+	public boolean checkForHit(String userGuess){
+		for(Startup su : startups){
 			if(su.containsCell(userGuess)) {
 				log.info("\nDirect hit on startup {} at {}!", su.getName(), userGuess);
 				su.removeCell(userGuess);
 				if(su.getCells().isEmpty()) {
-					StartupGame.removeStartup(su);
+					removeStartup(su);
 					log.info("\nYou've destroyed startup {}!", su.getName());
 				}
 				return true;
@@ -105,7 +102,7 @@ public final class StartupGame {
 		return false;
 	}
 
-	private static void outputBoardState(){
+	public void outputBoardState(){
 		StringBuilder sb = new StringBuilder("\n***** Game Board State *****\n");
 		sb.append("* Startups/Cells reamining *\n");
 		for(Startup su : startups){
@@ -118,7 +115,7 @@ public final class StartupGame {
 		log.debug(sb2s);
 	}
 
-	public static StartupGame setup(){
+	public String[] setStartupNames(){
 		log.info("\nName your first startup to be randomly placed on the grid: ");
 		String startup1Name = scanner.nextLine();
 		log.info("\nName your second startup to be randomly placed on the grid: ");
@@ -126,22 +123,24 @@ public final class StartupGame {
 		log.info("\nName your third startup to be randomly placed on the grid: ");
 		String startup3Name = scanner.nextLine();
 
-		return getInstance(new Startup(startup1Name), new Startup(startup2Name), new Startup(startup3Name));
+		return new String[]{startup1Name, startup2Name, startup3Name};
+
 	}
 
-	public static void gameLoop(){
-		while(!StartupGame.getStartups().isEmpty()){
+	public void gameLoop(){
+		while(!getStartups().isEmpty()){
 			log.info("\nGuess a cell in row/col format, i.e. A0 or H7: ");
 			String userGuess = scanner.nextLine().toUpperCase();
-			if(StartupGame.getUserGuesses().contains(userGuess)){
+			if(getUserGuesses().contains(userGuess)){
 				log.info("\nYou've already guessed {}, guess again.", userGuess);
 			} else {
-				StartupGame.setUserGuess(userGuess);
-				StartupGame.iterateNumOfGuesses();
-				if(!StartupGame.checkForHit(userGuess)) log.info("\nMiss at {}! Keep trying!", userGuess);
+				setUserGuess(userGuess);
+				iterateNumOfGuesses();
+				if(!checkForHit(userGuess)) log.info("\nMiss at {}! Keep trying!", userGuess);
 			}
 			outputBoardState();
 		}
+		log.info("\n You have sunk every startup in {} turns! YOU WIN!", getNumOfGuesses());
 
 	}
 

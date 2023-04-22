@@ -22,9 +22,7 @@ public class SinkthestartupApplication implements CommandLineRunner{
 	@Override
 	public void run(String... args) {
 		log.info("EXECUTING : command line runner");
-
-		StartupGame.setup();
-		StartupGame.gameLoop();
-		log.info("\nYou've destroyed all the startups in {} guesses. YOU WIN!", StartupGame.getNumOfGuesses());			
+		StartupGame game = new StartupGame();
+		game.gameLoop();
 	}
 }
