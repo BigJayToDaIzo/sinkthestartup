@@ -2,9 +2,11 @@ package com.hfj.sinkthestartup.classes;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 
 public final class StartupGame {
 	//Static variable reference of StartupGame of type Singleton
@@ -12,6 +14,7 @@ public final class StartupGame {
 
 	// instance variables
 	private static final Logger log = LoggerFactory.getLogger(StartupGame.class);
+	private static Scanner scanner = new Scanner(System.in);
 	private static List<Startup> startups = new ArrayList<>();
 	private static List<String> occupiedCells = new ArrayList<>();
 	private static List<String> userGuesses = new ArrayList<>();
@@ -49,6 +52,17 @@ public final class StartupGame {
 		log.info("Startup 3 cells:{}", s3.cellsToString());
 		
 		return INSTANCE;
+	}
+
+	public static StartupGame setup(){
+		log.info("Name your first startup to be randomly placed on the grid: ");
+		String startup1Name = scanner.nextLine();
+		log.info("Name your second startup to be randomly placed on the grid: ");
+		String startup2Name = scanner.nextLine();
+		log.info("Name your third startup to be randomly placed on the grid: ");
+		String startup3Name = scanner.nextLine();
+
+		return getInstance(new Startup(startup1Name), new Startup(startup2Name), new Startup(startup3Name));
 	}
 
 	public static List<Startup> getStartups(){

@@ -28,23 +28,11 @@ public class SinkthestartupApplication implements CommandLineRunner{
 	public void run(String... args) {
 		log.info("EXECUTING : command line runner");
 		// board setup (abstract?)
-		// 
-		log.info("Name your first startup to be randomly placed on the grid: ");
-		String startup1Name = scanner.nextLine();
-		log.info("Name your second startup to be randomly placed on the grid: ");
-		String startup2Name = scanner.nextLine();
-		log.info("Name your third startup to be randomly placed on the grid: ");
-		String startup3Name = scanner.nextLine();
-
-		// ensure no duplication of cells exists in creation (abstract?)
-		Startup startup1 = new Startup(startup1Name);
-		Startup startup2 = new Startup(startup2Name);
-		Startup startup3 = new Startup(startup3Name);
-
-		// create board and pass in startups
-		StartupGame.getInstance(startup1, startup2, startup3);
+		// Abstraction for setup() BEGIN
+		StartupGame.setup();
 
 		// gameplay loop (abstract?)
+		// StartupGame.gameLoop();
 		// refactor to use StartupGame Singleton? i.e. iterateNumOfGuesses linting pathway
 		while(!StartupGame.getStartups().isEmpty()){
 			log.info("Guess a cell in row/col format, i.e. A0 or H7: ");
