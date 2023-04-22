@@ -18,14 +18,11 @@ public class StartupGame {
 	private int numOfGuesses = 0;
 
 	// constructor
-	public StartupGame(){
-		String[] startupNames = setStartupNames();
-		Startup s1 = new Startup(startupNames[0]);
+	public StartupGame(Startup s1, Startup s2, Startup s3){
 		s1.randomizeCells();
 		startups.add(s1);
 		addOccupiedCells(s1);
 
-		Startup s2 = new Startup(startupNames[1]);
 		s2.randomizeCells();
 		while(containsOverlap(s2)){
 			log.debug("Startup {} contained a dupe cell. Rerolling!", s2.getName());
@@ -35,7 +32,6 @@ public class StartupGame {
 		startups.add(s2);
 		addOccupiedCells(s2);
 
-		Startup s3 = new Startup(startupNames[2]);
 		s3.randomizeCells();
 		while(containsOverlap(s3)){
 			log.debug("Startup {} contained a dupe cell. Rerolling!", s3.getName());
@@ -49,31 +45,35 @@ public class StartupGame {
 
 	}
 
-	public List<Startup> getStartups(){
+	private List<Startup> getStartups(){
 		return startups;
 	}
 
-	public void removeStartup(Startup s){
+	private void removeStartup(Startup s){
 		startups.remove(s);
 	}
 
-	public List<String> getUserGuesses(){
+	private List<String> getOccupiedCells(){
+		return occupiedCells;
+	}
+
+	private List<String> getUserGuesses(){
 		return userGuesses;
 	}
 
-	public void setUserGuess(String guess){
+	private void setUserGuess(String guess){
 		userGuesses.add(guess);
 	}
 
-	public int getNumOfGuesses(){
+	private int getNumOfGuesses(){
 		return numOfGuesses;
 	}
 
-	public void iterateNumOfGuesses(){
+	private void iterateNumOfGuesses(){
 		numOfGuesses++;
 	}
 
-	public boolean containsOverlap(Startup su){
+	private boolean containsOverlap(Startup su){
 		List<String> suCells = su.getCells();
 		for(String cell : occupiedCells){
 			if(suCells.contains(cell)) return true;
@@ -81,13 +81,13 @@ public class StartupGame {
 		return false;
 	}
 
-	public void addOccupiedCells(Startup s){
+	private void addOccupiedCells(Startup s){
 		for(String cell : s.getCells()){
 			occupiedCells.add(cell);
 		}
 	}
 
-	public boolean checkForHit(String userGuess){
+	private boolean checkForHit(String userGuess){
 		for(Startup su : startups){
 			if(su.containsCell(userGuess)) {
 				log.info("\nDirect hit on startup {} at {}!", su.getName(), userGuess);
@@ -102,7 +102,7 @@ public class StartupGame {
 		return false;
 	}
 
-	public void outputBoardState(){
+	private void outputBoardState(){
 		StringBuilder sb = new StringBuilder("\n***** Game Board State *****\n");
 		sb.append("* Startups/Cells reamining *\n");
 		for(Startup su : startups){
@@ -113,18 +113,6 @@ public class StartupGame {
 		sb.append(userGuessesAppend);
 		String sb2s = sb.toString();
 		log.debug(sb2s);
-	}
-
-	public String[] setStartupNames(){
-		log.info("\nName your first startup to be randomly placed on the grid: ");
-		String startup1Name = scanner.nextLine();
-		log.info("\nName your second startup to be randomly placed on the grid: ");
-		String startup2Name = scanner.nextLine();
-		log.info("\nName your third startup to be randomly placed on the grid: ");
-		String startup3Name = scanner.nextLine();
-
-		return new String[]{startup1Name, startup2Name, startup3Name};
-
 	}
 
 	public void gameLoop(){

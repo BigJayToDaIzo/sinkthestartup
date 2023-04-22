@@ -83,13 +83,6 @@ public class Startup {
 		return str;
 	}
 
-	public void displayCells(){
-		log.info(name);
-		for(String cell: cells){
-			log.info(cell);
-		}
-	}
-
 	public boolean containsCell(String cellToCheck){
 		for(String cell : cells){
 			if(cell.equals(cellToCheck)) return true;
@@ -98,7 +91,7 @@ public class Startup {
 	}
 
 	public char convertIntToRowName(int num){
-		switch(num){
+		switch(num) {
 			case 0: return 'A';
 			case 1: return 'B';
 			case 2: return 'C';
@@ -106,8 +99,10 @@ public class Startup {
 			case 4: return 'E';
 			case 5: return 'F';
 			case 6: return 'G';
-			default: return 'F';
+			case 7: return 'H';
+			default: return '0';
 		}
+		
 	}
 
 	public String toString(){
