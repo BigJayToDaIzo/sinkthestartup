@@ -91,20 +91,18 @@ public final class StartupGame {
 	}
 
 	private static boolean checkForHit(String userGuess){
-		boolean contains = false;
 		for(Startup su : StartupGame.getStartups()){
 			if(su.containsCell(userGuess)) {
-				contains = true;
 				log.info("\nDirect hit on startup {} at {}!", su.getName(), userGuess);
 				su.removeCell(userGuess);
 				if(su.getCells().isEmpty()) {
 					StartupGame.removeStartup(su);
 					log.info("\nYou've destroyed startup {}!", su.getName());
 				}
-				break;
+				return true;
 			}
 		}
-		return contains;
+		return false;
 	}
 
 	private static void outputBoardState(){
