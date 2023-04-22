@@ -28,6 +28,7 @@ public class SinkthestartupApplication implements CommandLineRunner{
 	public void run(String... args) {
 		log.info("EXECUTING : command line runner");
 		// board setup (abstract?)
+		// 
 		log.info("Name your first startup to be randomly placed on the grid: ");
 		String startup1Name = scanner.nextLine();
 		log.info("Name your second startup to be randomly placed on the grid: ");
@@ -41,35 +42,34 @@ public class SinkthestartupApplication implements CommandLineRunner{
 		Startup startup3 = new Startup(startup3Name);
 
 		// create board and pass in startups
-		StartupGame game = StartupGame.getInstance(startup1, startup2, startup3);
+		StartupGame.getInstance(startup1, startup2, startup3);
 
 		// gameplay loop (abstract?)
 		// refactor to use StartupGame Singleton? i.e. iterateNumOfGuesses linting pathway
-		while(!game.getStartups().isEmpty()){
+		while(!StartupGame.getStartups().isEmpty()){
 			log.info("Guess a cell in row/col format, i.e. A0 or H7: ");
 			String userGuess = scanner.nextLine();
-			if(game.getUserGuesses().contains(userGuess)){
-				log.info(String.format("You've already guessed %s, guess again.", userGuess));
+			if(StartupGame.getUserGuesses().contains(userGuess)){
+				log.info("You've already guessed {}, guess again.", userGuess);
 			} else {
-				game.setUserGuess(userGuess);
-				game.iterateNumOfGuesses();
+				StartupGame.setUserGuess(userGuess);
+				StartupGame.iterateNumOfGuesses();
 				boolean contains = false;
-				for(Startup su : game.getStartups()){
+				for(Startup su : StartupGame.getStartups()){
 					if(su.containsCell(userGuess)) {
 						contains = true;
-						log.info(String.format("direct hit on startup %s at %s!", su.getName(), userGuess));
+						log.info("Direct hit on startup {} at {}!", su.getName(), userGuess);
 						su.removeCell(userGuess);
 						if(su.getCells().isEmpty()) {
-							game.removeStartup(su);
-							log.info(String.format("You've destroyed startup %s!", su.getName()));
+							StartupGame.removeStartup(su);
+							log.info("You've destroyed startup {}!", su.getName());
 						}
 						break;
 					}
 				}
-				if(!contains) log.info(String.format("miss at %s! Keep trying!", userGuess));
+				if(!contains) log.info("Miss at {}! Keep trying!", userGuess);
 			}
 		}
-		log.info(String.format("You've destroyed all the startups in %s guesses.  YOU WIN!", game.getNumOfGuesses()));
-			
+		log.info("You've destroyed all the startups in {} guesses. YOU WIN!", StartupGame.getNumOfGuesses());			
 	}
 }

@@ -11,7 +11,7 @@ public final class StartupGame {
 	private static StartupGame INSTANCE;
 
 	// instance variables
-	private static final Logger log = LoggerFactory.getLogger(StartupGame.class.getName());
+	private static final Logger log = LoggerFactory.getLogger(StartupGame.class);
 	private static List<Startup> startups = new ArrayList<>();
 	private static List<String> occupiedCells = new ArrayList<>();
 	private static List<String> userGuesses = new ArrayList<>();
@@ -24,7 +24,8 @@ public final class StartupGame {
 		s1.randomizeCells();
 		startups.add(s1);
 		addOccupiedCells(s1);
-		log.info(String.format("Startup 1 cells:%s", s1.cellsToString()));
+		log.info("Startup 1 cells:{}:", s1.cellsToString());
+		System.console();
 
 		s2.randomizeCells();
 		while(containsOverlap(s2)){
@@ -34,43 +35,43 @@ public final class StartupGame {
 		} 
 		startups.add(s2);
 		addOccupiedCells(s2);
-		log.info(String.format("Startup 2 cells:%s", s2.cellsToString()));
+		log.info("Startup 2 cells:{}", s2.cellsToString());
 
 
 		s3.randomizeCells();
 		while(containsOverlap(s3)){
-			log.info("Startup 3 contained a dupe cell.  Rerolling!");
+			log.info("Startup 3 contained a dupe cell. Rerolling!");
 			s3.clearCells();
 			s3.randomizeCells();
 		} 
 		startups.add(s3);
 		addOccupiedCells(s3);
-		log.info(String.format("Startup 3 cells:%s", s3.cellsToString()));		
+		log.info("Startup 3 cells:{}", s3.cellsToString());
 		
 		return INSTANCE;
 	}
 
-	public List<Startup> getStartups(){
+	public static List<Startup> getStartups(){
 		return startups;
 	}
 
-	public void removeStartup(Startup s){
+	public static void removeStartup(Startup s){
 		startups.remove(s);
 	}
 
-	public List<String> getUserGuesses(){
+	public static List<String> getUserGuesses(){
 		return userGuesses;
 	}
 
-	public void setUserGuess(String guess){
+	public static void setUserGuess(String guess){
 		userGuesses.add(guess);
 	}
 
-	public int getNumOfGuesses(){
+	public static int getNumOfGuesses(){
 		return numOfGuesses;
 	}
 
-	public void iterateNumOfGuesses(){
+	public static void iterateNumOfGuesses(){
 		numOfGuesses++;
 	}
 
