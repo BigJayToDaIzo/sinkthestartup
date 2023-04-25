@@ -18,14 +18,14 @@ public class SinkthestartupApplication implements CommandLineRunner{
 	private static Scanner scanner = new Scanner(System.in);
 
 	public static void main(String[] args) {
-		log.info("STARTING THE APPLICATION");
+		log.debug("STARTING THE APPLICATION");
 		SpringApplication.run(SinkthestartupApplication.class, args);
-		log.info("APPLICATION FINISHED");
+		log.debug("APPLICATION FINISHED");
 	}
 
 	@Override
 	public void run(String... args) {
-		log.info("EXECUTING : command line runner");
+		log.debug("EXECUTING : command line runner");
 		log.info("\nEnter a name for the first startup: ");
 		Startup s1 = new Startup(scanner.nextLine());
 		log.info("\nEnter a name for the second startup: ");
